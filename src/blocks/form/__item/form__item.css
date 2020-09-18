@@ -1,0 +1,28 @@
+.form__item {
+  max-width: 358px;
+  width: 358px;
+  height: 25px;
+  background-color: black;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 0;
+  margin-top: 3.57rem;
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.21rem;
+}
+
+.form__item::placeholder {
+  color: #ccc;
+}
+
+.form__item:focus {
+  border-bottom: 2px solid black;
+}
+
+@media screen and (max-width: 475px) {
+  .form__item {
+    width: 260px;
+    margin-top: 2.86rem;
+  }
+}

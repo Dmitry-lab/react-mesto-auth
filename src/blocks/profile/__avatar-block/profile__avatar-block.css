@@ -1,0 +1,26 @@
+.profile__avatar-block {
+  width: 122px;
+  height: 122px;
+  margin-right: 2.14rem;
+  position: relative;
+  border-radius: 50%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.profile__avatar-block:hover .profile__edit-icon {
+  opacity: 1;
+  cursor: pointer;
+}
+.profile__avatar-block:hover .profile__shadow-rect {
+  opacity: 1;
+  cursor: pointer;
+}
+
+
+@media screen and (max-width: 900px) {
+  .profile__avatar-block {
+    margin-right: 0;
+  }
+}

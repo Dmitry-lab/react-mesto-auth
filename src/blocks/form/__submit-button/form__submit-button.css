@@ -1,0 +1,25 @@
+.form__submit-button {
+  max-width: 358px;
+  width: 358px;
+  height: 50px;
+  background-color: white;
+  color: black;
+  font-size: 1.29rem;
+  line-height: 1.56rem;
+  margin-top: 15.43rem;
+}
+
+.form__submit-button {
+  opacity: .85;
+}
+
+
+@media screen and (max-width: 475px) {
+  .form__submit-button {
+    width: 260px;
+    height: 46px;
+    margin-top: 12.36rem;
+    font-size: 1.14rem;
+    line-height: 1.38rem;
+  }
+}

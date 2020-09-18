@@ -1,0 +1,6 @@
+.card__likes-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

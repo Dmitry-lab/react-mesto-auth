@@ -1,0 +1,15 @@
+@import url('./__title/form__title.css');
+@import url('./__item/form__item.css');
+@import url('./__item/_second/form__item_second.css');
+@import url('./__submit-button/form__submit-button.css');
+@import url('./__caption/form__caption.css');
+@import url('./__link/form__link.css');
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: normal;
+}

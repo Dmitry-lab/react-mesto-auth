@@ -1,0 +1,27 @@
+.profile__description {
+  margin: 0;
+  padding-top: .6rem;
+  font-size: 1.28rem;
+  line-height: 1.57rem;
+  font-weight: normal;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 900px) {
+  .profile__description {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .profile__description {
+    padding-top: .5rem;
+    font-size: calc(1.28rem - (475px - 100vw)*.025);
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .profile__description {
+    font-size: 1rem;
+  }
+}

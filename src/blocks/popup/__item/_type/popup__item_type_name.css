@@ -1,0 +1,9 @@
+.popup__item_type_name {
+  margin: 3.3em auto 0;
+}
+
+@media screen and (max-width: 520px) {
+  .popup__item_type_name {
+    margin: 2.3em auto 0;
+  }
+}

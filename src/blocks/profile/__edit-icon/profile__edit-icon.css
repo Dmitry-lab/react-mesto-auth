@@ -1,0 +1,13 @@
+.profile__edit-icon {
+  margin: auto;
+  width: 26px;
+  height: 26px;
+  position: relative;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity .4s ease;
+  grid-row: 1;
+  grid-column: 1;
+}
+
+

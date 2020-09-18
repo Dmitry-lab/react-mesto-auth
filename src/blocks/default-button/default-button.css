@@ -1,0 +1,17 @@
+.default-button {
+  background-color: transparent;
+  color: #fff;
+  transition: opacity .5s ease;
+  border: none;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.default-button:hover {
+  cursor: pointer;
+  opacity: .6;
+}
+
+.default-button:focus {
+  outline: none;
+}

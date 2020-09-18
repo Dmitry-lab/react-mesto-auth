@@ -1,0 +1,30 @@
+.profile__name {
+  padding: 1.3rem 0 0 0;
+  margin: 0;
+  font-size: 3rem;
+  line-height: 3.6rem;
+  font-weight: 500;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 900px) {
+  .profile__name {
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .profile__name {
+    padding-top: 1rem;
+    font-size: calc(3rem - (475px - 100vw)*.1);
+    line-height: calc(4rem - (475px - 100vw)*.15);;
+    margin: 0 .7rem 0 0;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .profile__name {
+    font-size: 1.93rem;
+    line-height: 2.3rem;
+  }
+}

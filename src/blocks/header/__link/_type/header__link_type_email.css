@@ -1,0 +1,11 @@
+.header__link_type_email {
+  max-width: 270px;
+  overflow: hidden;
+  margin-right: 1.71rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__link_type_email {
+    padding-right: 0;
+  }
+}

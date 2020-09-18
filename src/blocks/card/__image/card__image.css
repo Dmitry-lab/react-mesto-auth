@@ -1,0 +1,22 @@
+.card__image {
+  width: 100%;
+  height: 282px;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  position: relative;
+  z-index: 0;
+}
+
+.card__image::before {
+  content: 'Извините, изображение не загружено';
+  color: black;
+  font-size: 1rem;
+  font-weight: normal;
+  display: block;
+  width: 100%;
+  height: 260px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  z-index: 2;
+}

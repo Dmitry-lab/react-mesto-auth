@@ -1,0 +1,17 @@
+.header__link {
+  font-size: 1.29rem;
+  line-height: 1.57rem;
+  align-self: flex-start;
+}
+
+@media screen and (max-width: 1024px) {
+  .header__link {
+    padding-right: 1.93rem;
+  }
+}
+
+@media screen and (max-width: 475px) {
+  .header__link {
+    font-size: 1rem;
+  }
+}
