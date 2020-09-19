@@ -1,0 +1,17 @@
+.popup__status-caption {
+  margin: 1.33em 0 2.5em;
+  font-weight: 900;
+  font-size: 1.71em;
+  line-height: 1.21;
+  align-self: center;
+  width: 14.92em;
+  text-align: center;
+}
+
+@media screen and (max-width: 520px) {
+  .popup__status-caption {
+    width: 17.43em;
+    margin: 2.86em 0 3.57em;
+    font-size: 1em;
+  }
+}

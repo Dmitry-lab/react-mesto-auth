@@ -1,7 +1,8 @@
 import React from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import InfoTooltip from './InfoTooltip';
 import Main from './Main';
 import Login from './Login';
 import Register from './Register';
@@ -13,22 +14,30 @@ import projectApi from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import successImage from '../images/success.svg';
+import failureImage from '../images/fail.svg';
+import * as auth from '../utils/auth';
 
 function App() {
   const [isEditProfilePopupOpen, setProfilePopupOpened] = React.useState(false);
   const [isAddPlacePopupOpen, setPlacePopupOpened] = React.useState(false);
   const [isEditAvatarPopupOpen, setAvatarPopupOpened] = React.useState(false);
   const [isAgreementAvatarOpen, setAgreementPopupOpened] = React.useState(false);
+  const [isInfoTooltipOpen, setInfoTooltipOpened] = React.useState({ main:false, register: false });
   const [selectedCard, setSelectedCard] = React.useState({ img: '', alt: '', opened: false });
 
-  // установка состояний: Пользователь, удаляемая карточка, массив карточек
+  // установка состояний: Пользователь, удаляемая карточка, массив карточек, email пользователя
   const [currentUser, setCurrentUser] = React.useState({});
   const [deletedCard, setDeletedCard] = React.useState({});
   const [cards, setCards] = React.useState([]);
+  const [userEmail, setUserEmail] = React.useState('');
 
   // установка состояния авторизации пользователя
-  const [loggedIn, setLoggedIn] = React.useState(true);
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
+  const history = useHistory();
+
+  // получение данных о пользователе и массиве карточек при монтировании компонента
   React.useEffect(() => {
     Promise.all([projectApi.getUserInfo(), projectApi.getInitialCards()])
       .then(([userInfo, cardsArr]) => {
@@ -39,8 +48,25 @@ function App() {
         console.log(`Ошибка ${err}`);
         alert('Ошибка подключения к серверу.')
       })
-  }, []
-  )
+  }, [])
+
+  React.useEffect(() => {
+    auth.tokenCheck(localStorage.getItem('token'))
+      .then(result => {
+        if (result) {
+          setUserEmail(result.data.email);
+          setLoggedIn(true);
+          history.push('/');
+        }
+        else {
+          throw new Error('Ошибка текущего сеанса пользователя. Необходимо заново авторизироваться')
+        }
+      })
+      .catch (err => {
+        console.log(`Ошибка входа по токену ${err}`);
+        history.push('/sign-in');
+      })
+  }, [])
 
   const handleEditProfileClick = () => {
     setProfilePopupOpened(true)
@@ -69,6 +95,7 @@ function App() {
       setAvatarPopupOpened(false);
       setPlacePopupOpened(false);
       setAgreementPopupOpened(false);
+      setInfoTooltipOpened({ main:false, register: false });
       setSelectedCard({ src: '', alt: '', opened: false })
     }
   }
@@ -151,11 +178,63 @@ function App() {
       })
   }
 
+   //Обработчик подтверждения регистрации
+   const handleSignupSubmit = (email, password) => {
+    auth.register(email, password)
+      .then(result => {
+        if (result) {
+          setUserEmail(result.data.email);
+          setInfoTooltipOpened({ main: true, register: false })
+          setLoggedIn(true);
+          history.push('/');
+        }
+        else {
+          throw new Error('Не удалось завершить регистрацию')
+        }
+      })
+      .catch(err => {
+        console.log(`Ошибка регистрации пользователя: ${err}`);
+        setInfoTooltipOpened({ main: false, register: true })
+      })
+  }
+
+  //Обработчик авторизации
+  const handleSigninSubmit = (email, password) => {
+    auth.authorize(email, password)
+      .then(data => {
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          setUserEmail(email);
+          setLoggedIn(true);
+          history.push('/');
+        }
+        else {
+          throw new Error('Не удалось получить токен от сервера');
+        }
+      })
+      .catch(err => {
+        console.log(alert(`Ошибка авторизации: ${err}. Проверьте корректность данных в полях Email и Пароль`))
+      })
+  }
+
+  //Обработчик завершения сеанса
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUserEmail('');
+    setLoggedIn(false);
+    history.push('/sign-in');
+  }
+
   // Компонент для отображения основной старницы
   const CardsPage = () => {
     return (
       <>
-        <Header actionName="Выйти" userEmail="vlad@webref.ru" linkTo="/sign-up" />
+        <Header
+          actionName="Выйти"
+          userEmail={userEmail}
+          linkTo="/sign-up"
+          onLogout={handleLogout}
+        />
         <Main
           onEditProfileClick={handleEditProfileClick}
           onEditAvatarClick={handleEditAvatarClick}
@@ -181,6 +260,13 @@ function App() {
         />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onAvatarUpdate={handleAvatarUpdate} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen.main}
+          onClose={closeAllPopups}
+          statusImage={successImage}
+          status="успех"
+          title="Вы успешно зарегистрировались!"
+        />
       </>
     )
   }
@@ -190,17 +276,30 @@ function App() {
       <div className="page">
         <Switch>
           <Route path='/sign-in'>
-            <Header actionName="Регистрация" userEmail="" linkTo="/sign-up" />
-            <Login />
+            <Header
+              actionName="Регистрация"
+              userEmail=""
+              linkTo="/sign-up"
+            />
+            <Login onSignin={handleSigninSubmit}/>
           </Route>
           <Route path='/sign-up'>
-            <Header actionName="Войти" userEmail="" linkTo="/sign-in" />
-            <Register />
+            <Header
+              actionName="Войти"
+              userEmail=""
+              linkTo="/sign-in"
+            />
+            <Register onSignup={handleSignupSubmit}/>
+            <InfoTooltip
+              isOpen={isInfoTooltipOpen.register}
+              onClose={closeAllPopups}
+              statusImage={failureImage}
+              status="ошибка при регистрации"
+              title="Что-то пошло не так! Попробуйте ещё раз."
+            />
           </Route>
-          <ProtectedRoute path='/main' component={CardsPage} loggedIn={loggedIn} />
-          <Route>
-            {loggedIn ? <Redirect to='/main' /> : <Redirect to='/sign-in' />}
-          </Route>
+          <ProtectedRoute path='/' component={CardsPage} loggedIn={loggedIn} />
+
         </Switch>
       </div>
     </CurrentUserContext.Provider>

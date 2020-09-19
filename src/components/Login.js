@@ -2,12 +2,30 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 function Login(props) {
+
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  }
+
+  const handleSigninSubmit = (e) => {
+    e.preventDefault();
+    props.onSignin(email, password);
+  }
+
   return (
     <div>
-      <form className="form">
+      <form className="form" onSubmit={handleSigninSubmit}>
         <h1 className="form__title">Вход</h1>
         <input
           type="email"
+          onChange={handleEmailChange}
           id="sign-in-email"
           className="form__item"
           placeholder="Email"
@@ -15,6 +33,7 @@ function Login(props) {
         />
         <input
           type="password"
+          onChange={handlePasswordChange}
           id="sign-in-password"
           className="form__item form__item_second"
           placeholder="Пароль"
