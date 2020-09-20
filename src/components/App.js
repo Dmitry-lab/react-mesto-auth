@@ -14,8 +14,8 @@ import projectApi from '../utils/api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
-import successImage from '../images/success.svg';
-import failureImage from '../images/fail.svg';
+//import successImage from '../images/success.svg';
+//import failureImage from '../images/fail.svg';
 import * as auth from '../utils/auth';
 
 function App() {
@@ -31,6 +31,9 @@ function App() {
   const [deletedCard, setDeletedCard] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [userEmail, setUserEmail] = React.useState('');
+
+  const successImage = require('../images/success.svg');
+  const failureImage = require('../images/fail.svg');
 
   // установка состояния авторизации пользователя
   const [loggedIn, setLoggedIn] = React.useState(false);

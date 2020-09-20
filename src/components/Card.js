@@ -1,6 +1,5 @@
 import React from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import errorImage from '../images/no-image.svg';
 
 const Card = React.memo((props) => {
 
@@ -13,7 +12,7 @@ const Card = React.memo((props) => {
 
   return (
     <figure className="card">
-      <img className="card__image" src={props.card.link} alt={props.card.name} onError={e=>e.target.src=errorImage}/>
+      <img className="card__image" src={props.card.link} alt={props.card.name} />
       <div className="card__shadow-rect" data-url={props.card.link} data-alt={props.card.name} onClick={handleCardClick} />
       <figcaption className="card__caption-content">
         <p className="card__caption">{props.card.name}</p>
