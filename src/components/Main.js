@@ -1,10 +1,11 @@
 import React from 'react';
-import editAvatarIcon from '../images/edit-icon.svg';
+//import editAvatarIcon from '../images/edit-icon.svg';
 import Card from './Card';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
 function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
+  const editAvatarIcon = require('../images/edit-icon.svg');
 
   return (
     <main>

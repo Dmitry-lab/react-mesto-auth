@@ -3,7 +3,7 @@ import logo from '../images/logo.svg';
 import { Link } from 'react-router-dom';
 
 function Header(props) {
-  const handleLogout = () => {props.onLogout()}
+  const handleLogout = () => {props.onLogout()};
 
   return (
     <header className="header">
