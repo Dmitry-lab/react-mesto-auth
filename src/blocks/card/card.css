@@ -8,6 +8,8 @@
 @import url(__shadow-rect/card__shadow-rect.css);
 @import url(__likes-block/card__likes-block.css);
 @import url(__likes-counter/card__likes-counter.css);
+@import url(__info/card__info.css);
+
 
 .card {
   margin: 0;

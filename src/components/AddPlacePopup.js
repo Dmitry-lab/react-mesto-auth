@@ -42,7 +42,7 @@ function AddPlacePopup(props) {
       isOpen={props.isOpen}
       onClose={props.onClose}
       submitButtonText="Создать"
-      submitAvailable={nameError || urlError ? false : true}
+      submitAvailable={!(nameError || urlError)}
       onSubmit={handleSubmit}
     >
       <input
