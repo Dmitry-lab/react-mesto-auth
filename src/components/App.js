@@ -15,7 +15,7 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 //import successImage from '../images/success.svg';
-//import failureImage from '../images/fail.svg';
+import failureImage from '../images/fail.svg';
 import * as auth from '../utils/auth';
 
 function App() {
@@ -23,7 +23,8 @@ function App() {
   const [isAddPlacePopupOpen, setPlacePopupOpened] = React.useState(false);
   const [isEditAvatarPopupOpen, setAvatarPopupOpened] = React.useState(false);
   const [isAgreementAvatarOpen, setAgreementPopupOpened] = React.useState(false);
-  const [isInfoTooltipOpen, setInfoTooltipOpened] = React.useState({ main:false, register: false });
+  const [isInfoTooltipOpen, setInfoTooltipOpened] = React.useState({ opened: false, success: false });
+  const [currentPath, setCurrentPath] = React.useState('/');
   const [selectedCard, setSelectedCard] = React.useState({ img: '', alt: '', opened: false });
 
   // установка состояний: Пользователь, удаляемая карточка, массив карточек, email пользователя
@@ -33,7 +34,6 @@ function App() {
   const [userEmail, setUserEmail] = React.useState('');
 
   const successImage = require('../images/success.svg');
-  const failureImage = require('../images/fail.svg');
 
   // установка состояния авторизации пользователя
   const [loggedIn, setLoggedIn] = React.useState(false);
@@ -60,6 +60,7 @@ function App() {
           setUserEmail(result.data.email);
           setLoggedIn(true);
           history.push('/');
+          setCurrentPath('/');
         }
         else {
           throw new Error('Ошибка текущего сеанса пользователя. Необходимо заново авторизироваться')
@@ -98,9 +99,13 @@ function App() {
       setAvatarPopupOpened(false);
       setPlacePopupOpened(false);
       setAgreementPopupOpened(false);
-      setInfoTooltipOpened({ main:false, register: false });
+      setInfoTooltipOpened({ opened: false, success: false });
       setSelectedCard({ src: '', alt: '', opened: false })
     }
+  }
+
+  const handlePathChange = (newPath) => {
+      setCurrentPath(newPath);
   }
 
   //Функция замены карточек в массиве на новую
@@ -187,9 +192,10 @@ function App() {
       .then(result => {
         if (result) {
           setUserEmail(result.data.email);
-          setInfoTooltipOpened({ main: true, register: false })
+          setInfoTooltipOpened({ opened: true, success: true })
           setLoggedIn(true);
           history.push('/');
+          setCurrentPath('/');
         }
         else {
           throw new Error('Не удалось завершить регистрацию')
@@ -197,7 +203,7 @@ function App() {
       })
       .catch(err => {
         console.log(`Ошибка регистрации пользователя: ${err}`);
-        setInfoTooltipOpened({ main: false, register: true })
+        setInfoTooltipOpened({ opened: true, success: false })
       })
   }
 
@@ -210,6 +216,7 @@ function App() {
           setUserEmail(email);
           setLoggedIn(true);
           history.push('/');
+          setCurrentPath('/');
         }
         else {
           throw new Error('Не удалось получить токен от сервера');
@@ -226,6 +233,7 @@ function App() {
     setUserEmail('');
     setLoggedIn(false);
     history.push('/sign-in');
+    setCurrentPath('/sign-in');
   }
 
   // Компонент для отображения основной старницы
@@ -270,6 +278,11 @@ function App() {
           status="успех"
           title="Вы успешно зарегистрировались!"
         />
+        <Header
+          actionName="Войти"
+          userEmail=""
+          linkTo="/sign-in"
+        />
       </>
     )
   }
@@ -277,33 +290,53 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
+        <Header
+          userEmail={userEmail}
+          onLogout={handleLogout}
+          path={currentPath}
+        />
+
         <Switch>
           <Route path='/sign-in'>
-            <Header
-              actionName="Регистрация"
-              userEmail=""
-              linkTo="/sign-up"
-            />
-            <Login onSignin={handleSigninSubmit}/>
+            <Login onSignin={handleSigninSubmit} onPathChange={handlePathChange}/>
           </Route>
           <Route path='/sign-up'>
-            <Header
-              actionName="Войти"
-              userEmail=""
-              linkTo="/sign-in"
-            />
-            <Register onSignup={handleSignupSubmit}/>
-            <InfoTooltip
-              isOpen={isInfoTooltipOpen.register}
-              onClose={closeAllPopups}
-              statusImage={failureImage}
-              status="ошибка при регистрации"
-              title="Что-то пошло не так! Попробуйте ещё раз."
-            />
+            <Register onSignup={handleSignupSubmit} onPathChange={handlePathChange}/>
           </Route>
-          <ProtectedRoute path='/' component={CardsPage} loggedIn={loggedIn} />
-
+          <ProtectedRoute path='/'
+            component={Main}
+            onEditProfileClick={handleEditProfileClick}
+            onEditAvatarClick={handleEditAvatarClick}
+            onAddPlaceLink={handleAddPlaceLink}
+            onCardClick={handleCardClick}
+            onDeleteCardClick={handleDeleteCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            loggedIn={loggedIn}
+          />
         </Switch>
+        {loggedIn && <Footer />}
+
+        <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUserUpdate={handleUpdateUser} />
+        <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlaceSubmit={handleAddPlaceSubmit} />
+
+        <AgreementPopup
+          name="agreement"
+          title="Вы уверены?"
+          submitButtonText="Да"
+          isOpen={isAgreementAvatarOpen}
+          onClose={closeAllPopups}
+          deletedCard={deletedCard}
+          onSubmit={handleSubmitCardDelete}
+        />
+        <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onAvatarUpdate={handleAvatarUpdate} />
+        <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen.opened}
+          onClose={closeAllPopups}
+          statusImage={isInfoTooltipOpen.success ? successImage : failureImage}
+          title={isInfoTooltipOpen.success ? 'Вы успешно зарегистрировались!':'Что-то пошло не так! Попробуйте ещё раз'}
+        />
       </div>
     </CurrentUserContext.Provider>
   )

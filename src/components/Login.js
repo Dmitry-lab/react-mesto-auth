@@ -6,6 +6,12 @@ function Login(props) {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
+  const handlePathChange = (newPath) => {props.onPathChange(newPath)};
+
+  React.useEffect(() => {
+    handlePathChange('/sign-in')
+  }, []);
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   }
